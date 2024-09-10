@@ -32,16 +32,14 @@ void main(void) {
 	char file [2000];
 
 	scanf("Enter in your filename: ",filename);
+	scanf("Where to send original?: ", plainFilename);
+	scanf("Where to send ciphered text?: ", cipherFilename);
+	
 	fgets(fopen(filename,"r"), 2000, file);
+
 	printf("encrypting...");
 	char code = encrypt(file);
-
-	scanf("Where to send ciphered text?: ", cipherFilename);
-	fgets(fopen(cipherFilename, "w"), 2000, file);
 	
 	printf("decrypting...");
 	char og = decrypt(code);
-	scanf("Where to send original?: ", plainFilename);
-	fgets(fopen(plainFilename, "w"), 2000, file);
-
 }
