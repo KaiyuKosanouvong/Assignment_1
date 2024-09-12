@@ -4,24 +4,18 @@
 // encrypts the file contents 5 characters back
 static void cEncrypt(FILE* file, char cipherFilename []) {
 	char code[256];
-	char buff[256];
+	char ch;
 	// index counter
 	int i = 0;
 
-	// read one character
-	fread(buff, sizeof(char), 1, file);
-	// loop until end of file
-	while (!feof(file)) {
-		// store character
-		char ch = buff[i];
+	// read character and store it as ch, loop until end of file
+	while (fread(&ch, sizeof(char), 1, file) == 1) {
 
 		// encrypt character
 		code[i] = ch - 5;
 
 		// increment counter
 		i++;
-		// read next character
-		fread(buff, sizeof(char), 1, file);
 	}
 
 	// copy code to cipher file
@@ -35,33 +29,25 @@ static void cEncrypt(FILE* file, char cipherFilename []) {
 // same algorithm as encrypt just reverse to go up 5 characters
 static void cDecrypt(FILE * code, char plainFilename []) {
 	char og[256];
-	char buff[256]; 
+	char ch; 
 	// index counter
 	int i = 0;
 
-	// read one character
-	fread(buff, sizeof(char), 1, code);
-	// loop until end of file
-	while (!feof(code)) {
-		// read one character
-		fread(buff, sizeof(char), 1, code); 
-		// store character
-		char ch = buff[i];
+	// reads one character at a time, loop until end of file
+	while (fread(&ch, sizeof(char), 1, code) == 1) {
 
 		// decrypt character
 		og[i] = ch + 5; 
 		
 		// increment counter
 		i++; 
-		// read next character
-		fread(buff, sizeof(char), 1, code);
 	}
 
 	// copy code to 'original' file
 	FILE* plainFile = fopen(plainFilename, "w");
 	int eSize = sizeof(og[0]);
 	fwrite(og, i, eSize, plainFile);
-	fclose(plainFile);
+	fclose(plainFile); 
 }
 
 void main(void) {
