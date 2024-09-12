@@ -3,8 +3,8 @@
 
 // encrypts the file contents 5 characters back
 static void cEncrypt(FILE* file, char cipherFilename []) {
-	char * code[200];
-	char * buff[200];
+	char * code[256];
+	char * buff[256];
 	// index counter
 	int i = 0;
 
@@ -15,16 +15,8 @@ static void cEncrypt(FILE* file, char cipherFilename []) {
 		// store character
 		char ch = buff[i];
 
-		// if character is alphabetical (to handle wrap-around)
-		if (isalpha(buff[i])) {
-			// wrap around
-			code[i] = ((ch - 'A' - 5 + 26) % 26) + 'A';
-		}
-
-		// if character is a number, special character, etc. cipher like normal
-		else {
-			code[i] = ch - 5;
-		}
+		// encrypt character
+		code[i] = ch - 5;
 
 		// increment counter
 		i++;
@@ -40,8 +32,8 @@ static void cEncrypt(FILE* file, char cipherFilename []) {
 // decrypts the file contents to its original message
 // same algorithm as encrypt just reverse to go up 5 characters
 static void cDecrypt(FILE * code, char plainFilename []) {
-	char * og[200];
-	char * buff[200];
+	char * og[256];
+	char * buff[256];
 	// index counter
 	int i = 0;
 
@@ -52,22 +44,14 @@ static void cDecrypt(FILE * code, char plainFilename []) {
 		// store character
 		char ch = buff[i];
 
-		// if character is alphabetical (to handle wrap-around)
-		if (isalpha(ch)) {
-			// wrap around
-			og[i] = ((ch - 'A' + 5 + 26) % 26) + 'A'; 
-		}
-
-		// if character is a number, special character, etc. decipher like normal
-		else {
-			og[i] = ch + 5; 
-		}
-
+		// decrypt character
+		og[i] = ((ch - 'A' + 5 + 26) % 26) + 'A'; 
+		
 		// increment counter
-		i++;
+		i++; 
 	}
 
-	// copy code to cipher file
+	// copy code to 'original' file
 	FILE* plainFile = fopen(plainFilename, 'w');
 	int eSize = sizeof(og[0]);
 	fwrite(og, sizeof(og), eSize, plainFile);
@@ -76,17 +60,20 @@ static void cDecrypt(FILE * code, char plainFilename []) {
 
 void main(void) {
 	// variables for file names	
-	char filename[100];
-	char plainFilename[100];
-	char cipherFilename[100];
+	char filename[50];
+	char plainFilename[50];
+	char cipherFilename[50];
 	
 	// pointer for first file
 	FILE * file;
 
 	// prompts for user to input a file
-	scanf("Enter in your filename: ",filename);
-	scanf("Where to send original?: ", plainFilename);
-	scanf("Where to send ciphered text?: ", cipherFilename);
+	printf("Enter in your filename : ");
+	scanf("%s",filename);
+	printf("Where to send original ? : ");
+	scanf("%s", plainFilename);
+	printf("Where to send ciphered text ? : ");
+	scanf("%s", cipherFilename);
 	
 	// open file for reading access
 	file = fopen(filename, 'r');
@@ -102,3 +89,8 @@ void main(void) {
 
 	fclose(file);
 }
+
+// test paths
+// C:\Users\student\source\repos\Assignment_1\Assignment_1\testKey.txt
+// C:\Users\student\source\repos\Assignment_1\Assignment_1\testOG.txt
+// C:\Users\student\source\repos\Assignment_1\Assignment_1\testCipher.txt
