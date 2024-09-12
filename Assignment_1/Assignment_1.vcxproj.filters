@@ -18,6 +18,9 @@
     <ClCompile Include="CaesarCipher.c">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="XORCipher.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Text Include="testKey.txt">

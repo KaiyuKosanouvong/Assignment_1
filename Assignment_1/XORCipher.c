@@ -4,8 +4,11 @@
 #include <stdio.h>
 #include <string.h>
 
-// encrypts the file contents 5 characters back
-static void cEncrypt(FILE* file, char cipherFilename []) {
+// XOR key
+char KEY = 'm';
+
+// encrypts the file contents using exclusive or operation
+static void xorEncrypt(FILE* file, char cipherFilename[]) {
 	char code[256];
 	char ch;
 	// index counter
@@ -15,24 +18,24 @@ static void cEncrypt(FILE* file, char cipherFilename []) {
 	while (fread(&ch, sizeof(char), 1, file) == 1) {
 
 		// encrypt character
-		code[i] = ch - 5;
+		code[i] = ch ^ KEY;
 
 		// increment counter
 		i++;
 	}
 
 	// copy code to cipher file
-	FILE * ciphFile = fopen(cipherFilename, "w");
+	FILE* ciphFile = fopen(cipherFilename, "w");
 	int eSize = sizeof(code[0]);
 	fwrite(code, i, eSize, ciphFile);
 	fclose(ciphFile);
 }
 
 // decrypts the file contents to its original message
-// same algorithm as encrypt just reverse to go up 5 characters
-static void cDecrypt(FILE * code, char plainFilename []) {
+// same algorithm as encrypt just reverse exclusive or
+static void xorDecrypt(FILE* code, char plainFilename[]) {
 	char og[256];
-	char ch; 
+	char ch;
 	// index counter
 	int i = 0;
 
@@ -40,47 +43,47 @@ static void cDecrypt(FILE * code, char plainFilename []) {
 	while (fread(&ch, sizeof(char), 1, code) == 1) {
 
 		// decrypt character
-		og[i] = ch + 5; 
-		
+		og[i] = ch ^ 5;
+
 		// increment counter
-		i++; 
+		i++;
 	}
 
 	// copy code to 'original' file
 	FILE* plainFile = fopen(plainFilename, "w");
 	int eSize = sizeof(og[0]);
 	fwrite(og, i, eSize, plainFile);
-	fclose(plainFile); 
+	fclose(plainFile);
 }
 
-void main(void) {
+void xmain(void) {
 	// variables for file names	
 	char filename[50];
 	char plainFilename[50];
 	char cipherFilename[50];
-	
+
 	// pointer for first file
-	FILE * file;
+	FILE* file;
 
 	// prompts for user to input a file
 	printf("Enter in your filename : ");
-	scanf("%s",filename);
+	scanf("%s", filename);
 	printf("Where to send original ? : ");
 	scanf("%s", plainFilename);
 	printf("Where to send ciphered text ? : ");
 	scanf("%s", cipherFilename);
-	
+
 	// open file for reading access
 	file = fopen(filename, "r");
 
 	// start encryption
 	printf("encrypting...");
-	cEncrypt(file, cipherFilename);
-	
+	xorEncrypt(file, cipherFilename);
+
 	// start decryption
 	printf("decrypting...");
-	FILE * cFile = fopen(cipherFilename, "r");
-	cDecrypt(cFile, plainFilename);
+	FILE* cFile = fopen(cipherFilename, "r");
+	xorDecrypt(cFile, plainFilename);
 
 	fclose(file);
 }
